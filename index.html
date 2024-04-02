@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Управление ВМ</title>
+</head>
+<body>
+    <h1>Список ВМ</h1>
+    <table>
+        <tr>
+            <th>Имя Машины</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        {% for vm in vms %}
+        <tr>
+            <td>{{ vm.name }}</td>
+            <td>{{ vm.status }}</td>
+            <td>
+                <form action="/reboot" method="post">
+                    <input type="hidden" name="name" value="{{ vm.name }}">
+                    <button type="submit">Перезагрузить</button>
+                </form>
+                <form action="/reset" method="post">
+                    <input type="hidden" name="name" value="{{ vm.name }}">
+                    <button type="submit">Хард Резет</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
