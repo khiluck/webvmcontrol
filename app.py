@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_file
 import libvirt
 import os
 import tempfile
+from urllib.parse import unquote
 
 app = Flask(__name__)
 
@@ -74,7 +75,8 @@ def start():
 @app.route('/screenshot')
 def screenshot():
     vm_name = request.args.get('name')
-    host_uri = request.args.get('host')
+#    host_uri = request.args.get('host')
+    host_uri = unquote(request.args.get('host'))
     try:
         conn = libvirt.open(host_uri)
         if conn is not None:
