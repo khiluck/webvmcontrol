@@ -81,12 +81,12 @@
 							<input type="hidden" name="host" value="{{ vm.host }}">
 							<button type="submit" class="btn btn-success btn-sm">Start</button>
 						</form>
-						<form action="/reboot" method="post" onsubmit="return confirmReboot();">
+						<form action="/reboot" method="post" onsubmit="return confirmReboot(this);">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
 							<button type="submit" class="btn btn-warning btn-sm">Reboot</button>
 						</form>
-						<form action="/destroy" method="post" onsubmit="return confirmShutdown();">
+						<form action="/destroy" method="post" onsubmit="return confirmShutdown(this);">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
 							<button type="submit" class="btn btn-danger btn-sm">Force Shutdown</button>
@@ -134,13 +134,31 @@
 		});
 	</script>
 	<script>
-	function confirmReboot() {
-		return confirm('Are you sure you want to reboot VM?');
+	// This variable will hold the form action for reboot or shutdown
+	var currentActionForm;
+
+	function confirmReboot(form) {
+		$('#rebootModal').modal('show');
+		currentActionForm = form; // Store the form reference
+		return false; // Prevent form submission
 	}
 
-	function confirmShutdown() {
-		return confirm('Careful! This will shutdown VM without saving current openned files. Are you sure?');
+	function confirmShutdown(form) {
+		$('#shutdownModal').modal('show');
+		currentActionForm = form; // Store the form reference
+		return false; // Prevent form submission
 	}
+
+	document.addEventListener('DOMContentLoaded', (event) => {
+		document.getElementById('confirmReboot').addEventListener('click', function() {
+			currentActionForm.submit(); // Submit the stored form reference
+		});
+
+		document.getElementById('confirmShutdown').addEventListener('click', function() {
+			currentActionForm.submit(); // Submit the stored form reference
+		});
+	});
+
 	</script>
 	<script>
 	$(document).ready(function() {
@@ -164,6 +182,49 @@
             localStorage.setItem('scrollpos', window.scrollY);
         };
     </script>
+
+<!-- Reboot Modal -->
+<div class="modal fade" id="rebootModal" tabindex="-1" aria-labelledby="rebootModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rebootModalLabel">Confirm Reboot</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reboot the VM? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmReboot">Reboot</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Shutdown Modal -->
+<div class="modal fade" id="shutdownModal" tabindex="-1" aria-labelledby="shutdownModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shutdownModalLabel">Confirm Shutdown</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Careful! This will shutdown the VM without saving currently opened files. Are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmShutdown">Force Shutdown</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
 
