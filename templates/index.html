@@ -6,6 +6,20 @@
     <title>VM Control</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<style>
+	table {
+    	width: 100%;
+	}
+	
+	th {
+    	background-color: #ffffff;
+	    font-weight: 600;
+	}
+
+	td, th {
+    	padding: 8px;
+    	text-align: left;
+	}
+
 	.status-circle {
 		height: 10px;
 		width: 10px;
@@ -29,7 +43,11 @@
 <body>
 	<div class="container mt-5">
 		<h1>VM list</h1>
-		<table class="table">
+{% for host, vms in vms_grouped.items() %}
+    <div class="host-section">
+        <hr> <!-- Horizontal line to separate each host -->
+        <h2>{{ host }}</h2> <!-- Display the host name -->
+        <table class="table table-striped"">
 			<thead>
 				<tr>
 					<th scope="col">VM name</th>
@@ -68,6 +86,8 @@
 				{% endfor %}
 			</tbody>
 		</table>
+    </div>
+{% endfor %}
 	</div>
 
 	<!-- Модальное окно для скриншота -->
