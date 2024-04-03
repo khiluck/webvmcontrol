@@ -1,5 +1,5 @@
 # VM actions log
-vm_actions.log
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

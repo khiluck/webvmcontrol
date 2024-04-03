@@ -6,6 +6,7 @@ import secrets
 import tempfile
 import datetime
 import logging
+from datetime import datetime
 from urllib.parse import unquote, urlparse
 
 app = Flask(__name__)
@@ -27,8 +28,16 @@ users = [User(id="1", username=os.environ.get('LOGIN_USER'), password=os.environ
 #print(os.environ.get('LOGIN_USER'))
 #print(os.environ.get('PASSW_USER'))
 
+log_directory = 'logs'
+# Ensure log directory exists
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+# Generate a timestamp
+timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+log_file_name = os.path.join(log_directory, f"{timestamp}_vm_actions.log")
+
 # Basic configuration for logging
-logging.basicConfig(filename='vm_actions.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -44,10 +53,17 @@ def login():
         password = request.form['password']
         user = next((user for user in users if user.username == username and user.password == password), None)
         if user:
+            # Log successfull login here
+            ip_address = request.remote_addr  # Get IP address of the client
+            user_agent = request.headers.get('User-Agent')  # Optional: Capture user agent for more context
+            logging.info(f"Successful login for username: {username} from IP: {ip_address} User-Agent: {user_agent}")
             login_user(user)
             return redirect(url_for('index'))
         else:
-            # Instead of aborting with 401, render the login template with an error message
+            # Log failed login attempt here
+            ip_address = request.remote_addr  # Get IP address of the client
+            user_agent = request.headers.get('User-Agent')  # Optional: Capture user agent for more context
+            logging.info(f"Failed login attempt for username: {username} from IP: {ip_address} User-Agent: {user_agent}")
             error_message = "Invalid username or password. Please try again."
             return render_template('login.html', error=error_message)
     else:
@@ -129,11 +145,6 @@ def list_vms():
 @app.route('/')
 @login_required
 def index():
-    user_agent = request.headers.get('User-Agent')
-    ip_address = request.remote_addr
-    # Example log message
-    logging.info(f"User {current_user.username} successfully login to system from IP {ip_address} with browser {user_agent}")
-
     vms_grouped = list_vms_grouped_by_host()
     return render_template('index.html', vms_grouped=vms_grouped)
 
