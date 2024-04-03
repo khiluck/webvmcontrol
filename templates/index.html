@@ -106,7 +106,7 @@
 	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title" id="screenshotModalLabel">Screenshot preview</h5>
+			<h5 class="modal-title" id="screenshotModalLabel">Screenshot live preview. Refresh every 2 sec.</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
@@ -119,20 +119,30 @@
 	</div>
 
 	<script>
-	function showScreenshotModal(vmName, vmHost, event) {
-		event.preventDefault(); // Prevent the default anchor action
-		var scrollPosition = window.pageYOffset || document.documentElement.scrollTop; // Save current scroll position if needed
-		var timestamp = new Date().getTime(); // Get current timestamp
+	var refreshIntervalId; // This will hold the ID of the interval for clearing it later
+
+	function updateScreenshot(vmName, vmHost) {
+		var timestamp = new Date().getTime(); // Ensure the URL is unique to prevent caching
 		var imageUrl = "/screenshot?name=" + encodeURIComponent(vmName) + "&host=" + encodeURIComponent(vmHost) + "&timestamp=" + timestamp;
 		document.getElementById('screenshotImage').src = imageUrl;
-		$('#screenshotModal').modal('show');
 	}
+
+	function showScreenshotModal(vmName, vmHost, event) {
+		event.preventDefault(); // Prevent the default anchor action
+		updateScreenshot(vmName, vmHost); // Initial update
+		$('#screenshotModal').modal('show');
+		
+		// Set up an interval to refresh the screenshot every 2 seconds
+		refreshIntervalId = setInterval(function() {
+			updateScreenshot(vmName, vmHost);
+		}, 2000); // 2000 milliseconds
+	}
+
+	$('#screenshotModal').on('hidden.bs.modal', function () {
+		clearInterval(refreshIntervalId); // Clear the interval when the modal is closed
+	});
 	</script>
-	<script>
-		$('#screenshotModal').on('hidden.bs.modal', function () {
-			window.scrollTo(0, scrollPosition); // Restore the scroll position when the modal is closed
-		});
-	</script>
+
 	<script>
 	// This variable will hold the form action for reboot or shutdown
 	var currentActionForm;
