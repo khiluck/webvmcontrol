@@ -33,8 +33,7 @@ log_directory = 'logs'
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 # Generate a timestamp
-timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-log_file_name = os.path.join(log_directory, f"{timestamp}_vm_actions.log")
+log_file_name = os.path.join(log_directory, "vm_actions.log")
 
 # Basic configuration for logging
 logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
