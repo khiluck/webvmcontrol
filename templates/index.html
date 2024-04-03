@@ -75,7 +75,7 @@
 					</td>
 					<td>
 						<div class="d-flex flex-row">
-						<a href="#" class="btn btn-info btn-sm" onclick="showScreenshotModal('{{ vm.name }}', '{{ vm.host | urlencode }}')">Preview screen</a>
+						<a href="#" class="btn btn-info btn-sm" onclick="showScreenshotModal('{{ vm.name }}', '{{ vm.host | urlencode }}', event)">Preview screen</a>
 						<form action="/start" method="post" style="display: inline;">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
@@ -118,14 +118,20 @@
 	  </div>
 	</div>
 
-
 	<script>
-	function showScreenshotModal(vmName, vmHost) {
-		var timestamp = new Date().getTime(); // Получаем текущую метку времени
+	function showScreenshotModal(vmName, vmHost, event) {
+		event.preventDefault(); // Prevent the default anchor action
+		var scrollPosition = window.pageYOffset || document.documentElement.scrollTop; // Save current scroll position if needed
+		var timestamp = new Date().getTime(); // Get current timestamp
 		var imageUrl = "/screenshot?name=" + encodeURIComponent(vmName) + "&host=" + encodeURIComponent(vmHost) + "&timestamp=" + timestamp;
 		document.getElementById('screenshotImage').src = imageUrl;
 		$('#screenshotModal').modal('show');
 	}
+	</script>
+	<script>
+		$('#screenshotModal').on('hidden.bs.modal', function () {
+			window.scrollTo(0, scrollPosition); // Restore the scroll position when the modal is closed
+		});
 	</script>
 	<script>
 	function confirmReboot() {
@@ -142,7 +148,8 @@
         	"lengthChange": false,
         	"pageLength": -1,
 			"info": false,
-			"paging": false
+			"paging": false,
+			"searching": false
     	});
 	});
 	</script>
