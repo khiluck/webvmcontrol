@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Управление ВМ</title>
+    <title>VM Control</title>
 </head>
 <body>
-    <h1>Список ВМ</h1>
+    <h1>List of VMs</h1>
     <table>
         <tr>
-            <th>Имя Машины</th>
-            <th>Статус</th>
-            <th>Действия</th>
+            <th>VM name</th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
         {% for vm in vms %}
         <tr>
             <td>{{ vm.name }}</td>
             <td>{{ vm.status }}</td>
+			<td><a href="/screenshot?name={{ vm.name }}&host={{ vm.host | urlencode }}" target="_blank">Просмотр экрана</a></td>
             <td>
                 <form action="/reboot" method="post">
                     <input type="hidden" name="name" value="{{ vm.name }}">
-                    <button type="submit">Перезагрузить</button>
+    				<input type="hidden" name="host" value="{{ vm.host }}">
+                    <button type="submit">Soft Reboot</button>
                 </form>
-                <form action="/reset" method="post">
+                <form action="/destroy" method="post">
                     <input type="hidden" name="name" value="{{ vm.name }}">
-                    <button type="submit">Хард Резет</button>
+    				<input type="hidden" name="host" value="{{ vm.host }}">
+                    <button type="submit">Power off (In case is VM hangup)</button>
+                </form>
+                <form action="/start" method="post">
+                    <input type="hidden" name="name" value="{{ vm.name }}">
+    				<input type="hidden" name="host" value="{{ vm.host }}">
+                    <button type="submit">Start</button>
                 </form>
             </td>
         </tr>
@@ -30,3 +38,4 @@
     </table>
 </body>
 </html>
+
