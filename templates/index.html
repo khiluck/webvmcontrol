@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VM Control</title>
+
+	<!-- jQuery -->
+	<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+	<!-- DataTables -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 	<style>
 	table {
     	width: 100%;
@@ -47,7 +58,7 @@
     <div class="host-section">
         <hr> <!-- Horizontal line to separate each host -->
         <h2>{{ host }}</h2> <!-- Display the host name -->
-        <table class="table table-striped"">
+        <table id="my-vm-table-{{ loop.index }}" class="table table-striped vm-table">
 			<thead>
 				<tr>
 					<th scope="col">VM name</th>
@@ -107,9 +118,7 @@
 	  </div>
 	</div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 	<script>
 	function showScreenshotModal(vmName, vmHost) {
 		var timestamp = new Date().getTime(); // Получаем текущую метку времени
@@ -127,6 +136,14 @@
 		return confirm('Careful! This will shutdown VM without saving current openned files. Are you sure?');
 	}
 	</script>
+	<script>
+	$(document).ready(function() {
+		$('.vm-table').each(function() {
+			$(this).DataTable();
+		});
+	});
+	</script>
+
 </body>
 </html>
 
