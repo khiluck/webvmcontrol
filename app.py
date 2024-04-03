@@ -129,6 +129,11 @@ def list_vms():
 @app.route('/')
 @login_required
 def index():
+    user_agent = request.headers.get('User-Agent')
+    ip_address = request.remote_addr
+    # Example log message
+    logging.info(f"User {current_user.username} successfully login to system from IP {ip_address} with browser {user_agent}")
+
     vms_grouped = list_vms_grouped_by_host()
     return render_template('index.html', vms_grouped=vms_grouped)
 
