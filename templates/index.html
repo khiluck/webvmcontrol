@@ -138,11 +138,15 @@
 	</script>
 	<script>
 	$(document).ready(function() {
-		$('.vm-table').each(function() {
-			$(this).DataTable();
-		});
+    	$('.vm-table').DataTable({
+        	"lengthChange": false,
+        	"pageLength": -1,
+			"info": false,
+			"paging": false
+    	});
 	});
 	</script>
+
 
 </body>
 </html>
