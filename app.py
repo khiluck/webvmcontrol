@@ -5,6 +5,7 @@ import os
 import secrets
 import tempfile
 import datetime
+import logging
 from urllib.parse import unquote, urlparse
 
 app = Flask(__name__)
@@ -26,6 +27,8 @@ users = [User(id="1", username=os.environ.get('LOGIN_USER'), password=os.environ
 #print(os.environ.get('LOGIN_USER'))
 #print(os.environ.get('PASSW_USER'))
 
+# Basic configuration for logging
+logging.basicConfig(filename='vm_actions.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -148,11 +151,15 @@ def set_cookie_with_expiry():
     resp.set_cookie('secure_cookie', 'secure_value', secure=True, httponly=True)
     return resp
 
-
 @app.route('/reboot', methods=['POST'])
+@login_required
 def reboot():
     vm_name = request.form['name']
     host_uri = request.form['host']
+    user_agent = request.headers.get('User-Agent')
+    ip_address = request.remote_addr
+    # Example log message
+    logging.info(f"User {current_user.username} initiated VM reboot for {vm_name} from IP {ip_address} with browser {user_agent}")
 
     # Ensure the URI is complete
     parsed_uri = urlparse(host_uri)
@@ -175,9 +182,14 @@ def reboot():
 
 
 @app.route('/destroy', methods=['POST'])
+@login_required
 def destroy():
     vm_name = request.form['name']
     host_uri = request.form['host']
+    user_agent = request.headers.get('User-Agent')
+    ip_address = request.remote_addr
+    # Example log message
+    logging.info(f"User {current_user.username} initiated VM power off for {vm_name} from IP {ip_address} with browser {user_agent}")
 
     # Ensure the URI is complete
     parsed_uri = urlparse(host_uri)
@@ -198,10 +210,16 @@ def destroy():
     return redirect(url_for('index'))
 
 
+
 @app.route('/start', methods=['POST'])
+@login_required
 def start():
     vm_name = request.form['name']
     host_uri = request.form['host']
+    user_agent = request.headers.get('User-Agent')
+    ip_address = request.remote_addr
+    # Example log message
+    logging.info(f"User {current_user.username} initiated VM start for {vm_name} from IP {ip_address} with browser {user_agent}")
 
     # Ensure the URI is complete
     parsed_uri = urlparse(host_uri)
@@ -222,6 +240,7 @@ def start():
     return redirect(url_for('index'))
 
 @app.route('/screenshot')
+@login_required
 def screenshot():
     vm_name = request.args.get('name')
 #    host_uri = request.args.get('host')

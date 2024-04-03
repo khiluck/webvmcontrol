@@ -1,3 +1,6 @@
+# VM actions log
+vm_actions.log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
