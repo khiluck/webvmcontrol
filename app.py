@@ -44,7 +44,9 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         else:
-            return abort(401)  # Or you could return a custom message/page
+            # Instead of aborting with 401, render the login template with an error message
+            error_message = "Invalid username or password. Please try again."
+            return render_template('login.html', error=error_message)
     else:
         return render_template('login.html')
 
