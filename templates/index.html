@@ -21,6 +21,9 @@
 	.stopped {
 		background-color: #dc3545;
 	}
+	.d-flex.flex-row {
+    	gap: 10px; /* Adjust the value as needed */
+	}
 	</style>
 </head>
 <body>
@@ -42,22 +45,24 @@
 						<span class="status-circle {% if vm.status == 'Running' %}running{% else %}stopped{% endif %}"></span>{{ vm.status }}
 					</td>
 					<td>
+						<div class="d-flex flex-row">
 						<a href="#" class="btn btn-info btn-sm" onclick="showScreenshotModal('{{ vm.name }}', '{{ vm.host | urlencode }}')">Preview screen</a>
 						<form action="/start" method="post" style="display: inline;">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
 							<button type="submit" class="btn btn-success btn-sm">Start</button>
 						</form>
-						<form action="/reboot" method="post" style="display: inline;">
+						<form action="/reboot" method="post" onsubmit="return confirmReboot();">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
 							<button type="submit" class="btn btn-warning btn-sm">Reboot</button>
 						</form>
-						<form action="/destroy" method="post" style="display: inline;">
+						<form action="/destroy" method="post" onsubmit="return confirmShutdown();">
 							<input type="hidden" name="name" value="{{ vm.name }}">
 							<input type="hidden" name="host" value="{{ vm.host }}">
-							<button type="submit" class="btn btn-danger btn-sm">Force Shutdown (Careful!)</button>
+							<button type="submit" class="btn btn-danger btn-sm">Force Shutdown</button>
 						</form>
+						</div>
 					</td>
 				</tr>
 				{% endfor %}
@@ -93,7 +98,15 @@
 		$('#screenshotModal').modal('show');
 	}
 	</script>
+	<script>
+	function confirmReboot() {
+		return confirm('Are you sure you want to reboot VM?');
+	}
 
+	function confirmShutdown() {
+		return confirm('Careful! This will shutdown VM without saving current openned files. Are you sure?');
+	}
+	</script>
 </body>
 </html>
 
