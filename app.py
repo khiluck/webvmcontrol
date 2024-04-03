@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, abort
+from flask import Flask, render_template, request, redirect, url_for, send_file, abort, make_response, request
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import libvirt
 import os
 import secrets
 import tempfile
+import datetime
 from urllib.parse import unquote, urlparse
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Generates a 16-byte (128-bit) hex string
+
 
 
 login_manager = LoginManager()
@@ -123,17 +125,24 @@ def index():
     vms_grouped = list_vms_grouped_by_host()
     return render_template('index.html', vms_grouped=vms_grouped)
 
-#@app.route('/reboot', methods=['POST'])
-#def reboot():
-#    vm_name = request.form['name']
-#    host_uri = request.form['host']
-#    conn = libvirt.open(host_uri)  # Используйте URI, полученный из формы
-#    if conn is not None:
-#        domain = conn.lookupByName(vm_name)
-#        domain.reboot(libvirt.VIR_DOMAIN_REBOOT_DEFAULT)
-#        conn.close()
-#    return redirect(url_for('index'))
+@app.route('/set_cookie')
+def set_cookie():
+    resp = make_response("Cookie is set")
+    resp.set_cookie('your_cookie_name', 'cookie_value')
+    return resp
 
+@app.route('/get_cookie')
+def get_cookie():
+    cookie_value = request.cookies.get('your_cookie_name', 'Default_Value')
+    return 'The value of the cookie is: ' + cookie_value
+
+@app.route('/set_cookie_with_expiry')
+def set_cookie_with_expiry():
+    resp = make_response("Cookie with expiry is set")
+    expire_time = datetime.datetime.now() + datetime.timedelta(days=1)  # Expires in 1 day
+    resp.set_cookie('your_expiring_cookie', 'expiring_value', expires=expire_time)
+    resp.set_cookie('secure_cookie', 'secure_value', secure=True, httponly=True)
+    return resp
 
 
 @app.route('/reboot', methods=['POST'])
