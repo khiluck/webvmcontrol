@@ -63,7 +63,7 @@ def login():
             # Log failed login attempt here
             ip_address = request.remote_addr  # Get IP address of the client
             user_agent = request.headers.get('User-Agent')  # Optional: Capture user agent for more context
-            logging.info(f"Failed login attempt for username: {username} from IP: {ip_address} User-Agent: {user_agent}")
+            logging.warning(f"Failed login attempt for username: {username} from IP: {ip_address} User-Agent: {user_agent}")
             error_message = "Invalid username or password. Please try again."
             return render_template('login.html', error=error_message)
     else:
