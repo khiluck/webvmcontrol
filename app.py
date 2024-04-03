@@ -23,6 +23,9 @@ class User(UserMixin):
         self.password = password
 
 users = [User(id="1", username=os.environ.get('LOGIN_USER'), password=os.environ.get('PASSW_USER'))]
+#print(os.environ.get('LOGIN_USER'))
+#print(os.environ.get('PASSW_USER'))
+
 
 @login_manager.user_loader
 def load_user(user_id):
