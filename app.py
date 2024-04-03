@@ -1,10 +1,55 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, abort
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import libvirt
 import os
+import secrets
 import tempfile
 from urllib.parse import unquote, urlparse
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(16)  # Generates a 16-byte (128-bit) hex string
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+users = [User(id="1", username=os.environ.get('LOGIN_USER'), password=os.environ.get('PASSW_USER'))]
+#users = [User(id="1", username="aex", password="123")]
+
+@login_manager.user_loader
+def load_user(user_id):
+    for user in users:
+        if user.id == user_id:
+            return user
+    return None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = next((user for user in users if user.username == username and user.password == password), None)
+        if user:
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            return abort(401)  # Or you could return a custom message/page
+    else:
+        return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 def load_uris_from_config(config_path):
     uris = []
@@ -73,6 +118,7 @@ def list_vms():
     return vms
 
 @app.route('/')
+@login_required
 def index():
     vms_grouped = list_vms_grouped_by_host()
     return render_template('index.html', vms_grouped=vms_grouped)

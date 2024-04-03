@@ -1,0 +1,3 @@
+# Set the environmental variables before starting app!
+export LOGIN_USER=loginuser
+export PASSW_USER=password

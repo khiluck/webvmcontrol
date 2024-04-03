@@ -1,2 +1,3 @@
 Flask
 libvirt-python
+flask-login
