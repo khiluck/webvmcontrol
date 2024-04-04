@@ -18,7 +18,9 @@
 
 	<style>
 	table {
-    	width: 100%;
+	    width: 100%;
+	    margin-left: auto; /* Center the table horizontally */
+	    margin-right: auto; /* Center the table horizontally */
 	}
 	
 	th {
@@ -47,12 +49,17 @@
 		background-color: #dc3545;
 	}
 	.d-flex.flex-row {
-    	gap: 10px; /* Adjust the value as needed */
+    	gap: 16px; /* Adjust the value as needed */
+	}
+	.main-div-class {
+		max-width: 720px; 
+		margin-left: auto;
+		margin-right: auto;
 	}
 	</style>
 </head>
 <body>
-	<div class="container mt-5">
+	<div class="container mt-5 main-div-class">
 		<h1>VM Control Panel</h1>
 {% for host, vms in vms_grouped.items() %}
     <div class="host-section">
