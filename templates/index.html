@@ -132,6 +132,9 @@
 		updateScreenshot(vmName, vmHost); // Initial update
 		$('#screenshotModal').modal('show');
 		
+		// Update modal title with VM name
+		$('#screenshotModalLabel').text('Screenshot of ' + vmName + ' - Live Preview. Refreshing every 2 sec.');
+
 		// Set up an interval to refresh the screenshot every 2 seconds
 		refreshIntervalId = setInterval(function() {
 			updateScreenshot(vmName, vmHost);
