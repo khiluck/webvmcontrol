@@ -8,7 +8,7 @@ import datetime
 import logging
 from datetime import datetime
 from urllib.parse import unquote, urlparse
-from PIL import Image
+from PIL import Image, ImageOps
 import io
 
 
@@ -288,8 +288,7 @@ def screenshot():
 
                 # Resize the image using Pillow
                 with Image.open(tmpfile.name) as img:
-                    resized_img = img.resize((640, 480), Image.ANTIALIAS)
-                    # Save the resized image to a BytesIO buffer to avoid using the disk
+                    resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
                     img_byte_arr = io.BytesIO()
                     resized_img.save(img_byte_arr, format='PNG')
                     img_byte_arr = img_byte_arr.getvalue()
