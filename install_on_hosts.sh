@@ -1,7 +1,9 @@
 #!/bin/bash
 useradd -m webvmcontrol
 echo "webvmcontrol:$(openssl rand -base64 12)" | sudo chpasswd
+
 [ -d /etc/polkit-1/rules.d ] || mkdir -p /etc/polkit-1/rules.d
+[ -d /etc/polkit-1/localauthority/50-local.d ] || mkdir -p /etc/polkit-1/localauthority/50-local.d/
 
 # For Debian 12
 cat >> /etc/polkit-1/rules.d/50-webvmcontrol-libvirt.rules << "EOF2"

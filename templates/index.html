@@ -113,7 +113,7 @@
 	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title" id="screenshotModalLabel">Screenshot live preview. Refreshing every 2 sec.</h5>
+			<h5 class="modal-title" id="screenshotModalLabel">Screenshot live preview. Refreshing every 3 sec.</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
@@ -140,12 +140,12 @@
 		$('#screenshotModal').modal('show');
 		
 		// Update modal title with VM name
-		$('#screenshotModalLabel').text('Screenshot of ' + vmName + ' - Live Preview. Refreshing every 2 sec.');
+		$('#screenshotModalLabel').text('Screenshot of ' + vmName + ' - Live Preview. Refreshing every 3 sec.');
 
-		// Set up an interval to refresh the screenshot every 2 seconds
+		// Set up an interval to refresh the screenshot every 3 seconds
 		refreshIntervalId = setInterval(function() {
 			updateScreenshot(vmName, vmHost);
-		}, 2000); // 2000 milliseconds
+		}, 3000); // 3000 milliseconds
 	}
 
 	$('#screenshotModal').on('hidden.bs.modal', function () {
