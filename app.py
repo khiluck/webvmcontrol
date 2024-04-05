@@ -82,7 +82,7 @@ def load_uris_from_config(config_path):
     return uris
 
 # Загрузка списка URI из конфигурационного файла
-uris = load_uris_from_config('config.txt')
+uris = load_uris_from_config('servers.list')
 
 def is_valid_uri(uri):
     parsed_uri = urlparse(uri)
