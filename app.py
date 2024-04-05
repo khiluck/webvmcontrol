@@ -285,7 +285,20 @@ def screenshot():
                 stream.recvAll(handler, None)
                 stream.finish()
                 tmpfile.flush()
+                # Resize the image using Pillow with the correct resampling filter
+                with Image.open(tmpfile.name) as img:
+                    resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
+                    img_byte_arr = io.BytesIO()
+                    resized_img.save(img_byte_arr, format='PNG')
+                    img_byte_arr.seek(0)  # Reset the file pointer to the beginning of the byte array
 
+                # Return the resized image to the client with the correct parameters
+                return send_file(
+                    img_byte_arr,
+                    mimetype='image/png',
+                    as_attachment=True,
+                    download_name='screenshot.png'
+                )
                 # Resize the image using Pillow
                 with Image.open(tmpfile.name) as img:
                     resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
