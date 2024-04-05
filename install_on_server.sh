@@ -41,6 +41,25 @@ server {
     }
 EOF
 
+# Add script to boot
+cat << EOF2 > /usr/lib/systemd/system/webvmcontrol.service
+[Unit]
+Description=webvmcontrol
+After=network.target libvirtd.service
+
+[Service]
+User=root
+WorkingDirectory=/root/webvmcontrol/
+ExecStart=/root/webvmcontrol/venv/bin/python3 /root/webvmcontrol/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF2
+ 
+# Enable service
+systemctl enable webvmcontrol.service
+
 
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/webvmcontrol
 
