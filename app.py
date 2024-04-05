@@ -299,19 +299,6 @@ def screenshot():
                     as_attachment=True,
                     download_name='screenshot.png'
                 )
-                # Resize the image using Pillow
-                with Image.open(tmpfile.name) as img:
-                    resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
-                    img_byte_arr = io.BytesIO()
-                    resized_img.save(img_byte_arr, format='PNG')
-                    img_byte_arr = img_byte_arr.getvalue()
-
-                # Return the resized image to the client
-                return send_file(
-                    io.BytesIO(img_byte_arr),
-                    attachment_filename='screenshot.png',
-                    mimetype='image/png'
-                )
     except libvirt.libvirtError as e:
         return str(e), 500
     finally:
