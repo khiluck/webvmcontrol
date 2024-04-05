@@ -2,3 +2,4 @@ Flask
 libvirt-python
 flask-login
 gunicorn
+Pillow

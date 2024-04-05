@@ -8,6 +8,9 @@ import datetime
 import logging
 from datetime import datetime
 from urllib.parse import unquote, urlparse
+from PIL import Image
+import io
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Generates a 16-byte (128-bit) hex string
@@ -258,7 +261,6 @@ def start():
 @login_required
 def screenshot():
     vm_name = request.args.get('name')
-#    host_uri = request.args.get('host')
     host_uri = unquote(request.args.get('host'))
 
     # Ensure the URI is complete
@@ -283,8 +285,21 @@ def screenshot():
                 stream.recvAll(handler, None)
                 stream.finish()
                 tmpfile.flush()
-                # Возвращение файла пользователю
-                return send_file(tmpfile.name, mimetype='image/png', as_attachment=True)
+
+                # Resize the image using Pillow
+                with Image.open(tmpfile.name) as img:
+                    resized_img = img.resize((640, 480), Image.ANTIALIAS)
+                    # Save the resized image to a BytesIO buffer to avoid using the disk
+                    img_byte_arr = io.BytesIO()
+                    resized_img.save(img_byte_arr, format='PNG')
+                    img_byte_arr = img_byte_arr.getvalue()
+
+                # Return the resized image to the client
+                return send_file(
+                    io.BytesIO(img_byte_arr),
+                    attachment_filename='screenshot.png',
+                    mimetype='image/png'
+                )
     except libvirt.libvirtError as e:
         return str(e), 500
     finally:
