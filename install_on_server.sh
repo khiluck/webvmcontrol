@@ -50,7 +50,7 @@ After=network.target libvirtd.service
 [Service]
 User=root
 WorkingDirectory=/root/webvmcontrol/
-ExecStart=/root/webvmcontrol/venv/bin/python3 /root/webvmcontrol/app.py
+ExecStart=cd /root/webvmcontrol/ && /root/webvmcontrol/.env/bin/gunicorn --env LOGIN_USER=admin --env PASSW_USER=123 app:app
 Restart=always
 
 [Install]
