@@ -1,6 +1,9 @@
 # On the webserver:
 # =================
 
+# Download from github
+git clone https://github.com/khiluck/webvmcontrol
+
 # Generate ssh-key:
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/webvmcontrol
 
@@ -38,6 +41,9 @@ polkit.addRule(function(action, subject) {
     }
 })
 # ===
+
+# Restart policykit
+systemctl restart polkit
 
 # Add ssh pub key to user kvmmanager
 mkdir /home/webvmcontrol/.ssh
