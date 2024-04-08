@@ -60,7 +60,7 @@ python3 -m venv /$PATHTOAPP/webvmcontrol/.env && source /$PATHTOAPP/webvmcontrol
 # Set the permissions
 chown $USRNAME:$USRNAME -R /$PATHTOAPP/webvmcontrol
 chown $USRNAME:$USRNAME -R /home/$USRNAME/.ssh
-chmod 600 -R /home/$USRNAME/.ssh
+chmod 640 /home/$USRNAME/.ssh/*
 
 
 # Prepare the nginx
