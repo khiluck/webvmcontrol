@@ -51,16 +51,16 @@ Host kvmhost225
 EOF1
 
 # Copy the app
-[ -d /$PATHTOAPP/webvmcontrol ] || mkdir -p /$PATHTOAPP/webvmcontrol
+[ -d $PATHTOAPP/webvmcontrol ] || mkdir -p $PATHTOAPP/webvmcontrol
 cp -r . /$PATHTOAPP/webvmcontrol
 
 # Create an environment and install dependencies
-python3 -m venv /$PATHTOAPP/webvmcontrol/.env && source /$PATHTOAPP/webvmcontrol/.env/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+python3 -m venv $PATHTOAPP/webvmcontrol/.env && source $PATHTOAPP/webvmcontrol/.env/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
 # Set the permissions
-chown $USRNAME:$USRNAME -R /$PATHTOAPP/webvmcontrol
+chown $USRNAME:$USRNAME -R $PATHTOAPP/webvmcontrol
 chown $USRNAME:$USRNAME -R /home/$USRNAME/.ssh
-chmod 640 /home/$USRNAME/.ssh/*
+chmod 400 /home/$USRNAME/.ssh/webvmcontrol
 
 
 # Prepare the nginx
@@ -110,9 +110,9 @@ After=network.target libvirtd.service
 
 [Service]
 User=$USRNAME
-EnvironmentFile=/$PATHTOAPP/webvmcontrol/cred.env
-WorkingDirectory=/$PATHTOAPP/webvmcontrol/
-ExecStart=/$PATHTOAPP/webvmcontrol/.env/bin/gunicorn app:app
+EnvironmentFile=$PATHTOAPP/webvmcontrol/cred.env
+WorkingDirectory=$PATHTOAPP/webvmcontrol/
+ExecStart=$PATHTOAPP/webvmcontrol/.env/bin/gunicorn app:app
 Restart=always
 
 [Install]
@@ -134,7 +134,9 @@ echo "1. Copy your certs to /etc/nginx/certs folder and change the settings in /
 echo ""
 echo "2. Edit /home/$USRNAME/.ssh/config file"
 echo ""
-echo "3. Edit /$PATHTOAPP/webvmcontrol/cred.env file and set login and password"
+echo "3. Edit $PATHTOAPP/webvmcontrol/cred.env file and set login and password"
 echo ""
-echo "4. Edit /$PATHTOAPP/webvmcontrol/servers.list file and add remote KVMs"
+echo "4. Edit $PATHTOAPP/webvmcontrol/servers.list file and add remote KVMs"
 echo ""
+echo "5. Connect via ssh from $USRNAME to every kvmhost in servers.list to accept hostkey"
+echo "   example: su - webvmcontrol -c 'ssh kvmhost200 -o StrictHostKeyChecking=no'" 
