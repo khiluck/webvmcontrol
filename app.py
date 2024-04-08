@@ -293,7 +293,7 @@ def screenshot():
                 with Image.open(tmpfile.name) as img:
                     resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
                     img_byte_arr = io.BytesIO()
-                    resized_img.save(img_byte_arr, format='JPEG')
+                    resized_img.save(img_byte_arr, format='JPEG', quality=95)
                     img_byte_arr.seek(0)  # Reset the file pointer to the beginning of the byte array
 
                 # Return the resized image to the client with the correct parameters
