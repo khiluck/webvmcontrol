@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, abort, make_response, request
+from flask import Flask, render_template, request, redirect, url_for, send_file, abort, make_response, request, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import libvirt
 import os
@@ -273,7 +273,11 @@ def screenshot():
         conn = libvirt.open(host_uri)
         if conn is not None:
             domain = conn.lookupByName(vm_name)
-            with tempfile.NamedTemporaryFile(delete=True, suffix='.png') as tmpfile:
+            # Check if VM is running
+            if domain.state()[0] != libvirt.VIR_DOMAIN_RUNNING:
+                return jsonify({'error': 'VM is not running. Cannot capture screenshot.'}), 409
+
+            with tempfile.NamedTemporaryFile(delete=True, suffix='.jpg') as tmpfile:
                 # Создание объекта stream
                 stream = conn.newStream(0)
                 # Получение скриншота
@@ -289,15 +293,15 @@ def screenshot():
                 with Image.open(tmpfile.name) as img:
                     resized_img = img.resize((640, 480), Image.Resampling.LANCZOS)
                     img_byte_arr = io.BytesIO()
-                    resized_img.save(img_byte_arr, format='PNG')
+                    resized_img.save(img_byte_arr, format='JPEG')
                     img_byte_arr.seek(0)  # Reset the file pointer to the beginning of the byte array
 
                 # Return the resized image to the client with the correct parameters
                 return send_file(
                     img_byte_arr,
-                    mimetype='image/png',
+                    mimetype='image/jpeg',
                     as_attachment=True,
-                    download_name='screenshot.png'
+                    download_name='screenshot.jpg'
                 )
     except libvirt.libvirtError as e:
         return str(e), 500
