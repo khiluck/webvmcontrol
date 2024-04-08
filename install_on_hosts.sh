@@ -30,3 +30,7 @@ systemctl restart polkit
 
 [ -d /home/webvmcontrol/.ssh ] || mkdir -p /home/webvmcontrol/.ssh
 vi /home/webvmcontrol/.ssh/authorized_keys
+
+chown webvmcontrol:webvmcontrol -R /home/webvmcontrol/.ssh
+chmod 600 -R /home/webvmcontrol/.ssh
+
