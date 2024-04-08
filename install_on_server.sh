@@ -48,9 +48,10 @@ Description=webvmcontrol
 After=network.target libvirtd.service
 
 [Service]
-User=root
+User=nginx
+EnvironmentFile=/root/webvmcontrol/cred.env
 WorkingDirectory=/root/webvmcontrol/
-ExecStart=/root/webvmcontrol/.env/bin/gunicorn --env LOGIN_USER=admin --env PASSW_USER=123 app:app
+ExecStart=/root/webvmcontrol/.env/bin/gunicorn app:app
 Restart=always
 
 [Install]
